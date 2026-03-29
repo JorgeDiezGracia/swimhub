@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: swimhub-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: swimhub
+      MYSQL_USER: swimhub
+      MYSQL_PASSWORD: swimhub123
+    ports:
+      - "3306:3306"
+    volumes:
+      - swimhub_data:/var/lib/mysql
+    networks:
+      - swimhub-net
+
+volumes:
+  swimhub_data:
+
+networks:
+  swimhub-net:
