@@ -1,4 +1,4 @@
-package com.svalero.swimhub.entity;
+package com.svalero.swimhub.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
-@Table(name = "leagues")
-public class League {
+@Table(name = "clubs")
+public class Club {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,14 +18,16 @@ public class League {
     private String name;
 
     @Column(length = 100)
-    private String province;
+    private String city;
+
+    @Column(length = 100)
+    private String email;
 
     @ManyToOne
-    @JoinColumn(name = "federation_id", nullable = false)
-    private Federation federation;
+    @JoinColumn(name = "league_id", nullable = false)
+    private League league;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "league")
-    private List<Club> clubs;
+    @OneToMany(mappedBy = "club")
+    private List<Swimmer> swimmers;
 }
-

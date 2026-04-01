@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.Category;
+import com.svalero.swimhub.domain.Category;
+import com.svalero.swimhub.exception.CategoryNotFoundException;
 import com.svalero.swimhub.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category findById(Long id) {
+    public Category findById(Long id) throws CategoryNotFoundException {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        "Category not found with id: " + id));
     }
 }

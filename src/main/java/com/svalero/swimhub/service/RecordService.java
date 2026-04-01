@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.Record;
+import com.svalero.swimhub.domain.Record;
+import com.svalero.swimhub.exception.RecordNotFoundException;
 import com.svalero.swimhub.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class RecordService {
         return recordRepository.findAll();
     }
 
-    public Record findById(Long id) {
+    public Record findById(Long id) throws RecordNotFoundException {
         return recordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Record not found with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        "Record not found with id: " + id));
     }
 }

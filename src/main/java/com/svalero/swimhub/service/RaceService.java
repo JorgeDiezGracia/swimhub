@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.Race;
+import com.svalero.swimhub.domain.Race;
+import com.svalero.swimhub.exception.RaceNotFoundException;
 import com.svalero.swimhub.repository.RaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class RaceService {
         return raceRepository.findAll();
     }
 
-    public Race findById(Long id) {
+    public Race findById(Long id) throws RaceNotFoundException {
         return raceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Race not found with id: " + id));
+                .orElseThrow(() -> new RaceNotFoundException(
+                        "Race not found with id: " + id));
     }
 }

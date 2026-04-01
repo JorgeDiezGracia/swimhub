@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.TimeRecord;
+import com.svalero.swimhub.domain.TimeRecord;
+import com.svalero.swimhub.exception.TimeRecordNotFoundException;
 import com.svalero.swimhub.repository.TimeRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class TimeRecordService {
         return timeRecordRepository.findAll();
     }
 
-    public TimeRecord findById(Long id) {
+    public TimeRecord findById(Long id) throws TimeRecordNotFoundException {
         return timeRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("TimeRecord not found with id: " + id));
+                .orElseThrow(() -> new TimeRecordNotFoundException(
+                        "TimeRecord not found with id: " + id));
     }
 }

@@ -1,8 +1,13 @@
 package com.svalero.swimhub.controller;
 
-import com.svalero.swimhub.entity.Event;
+import com.svalero.swimhub.domain.Event;
+import com.svalero.swimhub.exception.EventNotFoundException;
+import com.svalero.swimhub.exception.ErrorResponse;
 import com.svalero.swimhub.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -13,14 +18,39 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @GetMapping
     public ResponseEntity<List<Event>> findAll() {
-        return ResponseEntity.ok(eventService.findAll());
+        logger.info("BEGIN findAll events");
+        List<Event> events = eventService.findAll();
+        logger.info("END findAll events");
+        return ResponseEntity.ok(events);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Event> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(eventService.findById(id));
+    public ResponseEntity<Event> findById(@PathVariable Long id)
+            throws EventNotFoundException {
+        logger.info("BEGIN findById event {}", id);
+        Event event = eventService.findById(id);
+        logger.info("END findById event {}", id);
+        return ResponseEntity.ok(event);
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEventNotFoundException(
+            EventNotFoundException exception) {
+        logger.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(
+                ErrorResponse.notFound(exception.getMessage()),
+                HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+        logger.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(
+                ErrorResponse.internalError(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

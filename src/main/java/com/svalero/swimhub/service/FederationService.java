@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.Federation;
+import com.svalero.swimhub.domain.Federation;
+import com.svalero.swimhub.exception.FederationNotFoundException;
 import com.svalero.swimhub.repository.FederationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class FederationService {
         return federationRepository.findAll();
     }
 
-    public Federation findById(Long id) {
+    public Federation findById(Long id) throws FederationNotFoundException {
         return federationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Federation not found with id: " + id));
+                .orElseThrow(() -> new FederationNotFoundException(
+                        "Federation not found with id: " + id));
     }
 }

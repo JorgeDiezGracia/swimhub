@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.Club;
+import com.svalero.swimhub.domain.Club;
+import com.svalero.swimhub.exception.ClubNotFoundException;
 import com.svalero.swimhub.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class ClubService {
         return clubRepository.findAll();
     }
 
-    public Club findById(Long id) {
+    public Club findById(Long id) throws ClubNotFoundException {
         return clubRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Club not found with id: " + id));
+                .orElseThrow(() -> new ClubNotFoundException(
+                        "Club not found with id: " + id));
     }
 }

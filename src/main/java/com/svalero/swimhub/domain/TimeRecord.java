@@ -1,9 +1,8 @@
-package com.svalero.swimhub.entity;
+package com.svalero.swimhub.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
