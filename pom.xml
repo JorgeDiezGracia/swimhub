@@ -46,7 +46,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<!-- H2 para tests -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
@@ -85,7 +90,6 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<!-- Swagger / OpenAPI -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -93,7 +97,6 @@
 			<version>2.5.0</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
