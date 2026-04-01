@@ -16,7 +16,7 @@
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${LOG_NAME}.log</file>
         <encoder
-                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">:wq
             <Pattern>%d %p %C{1} {%M} [%t] %m%n</Pattern>
         </encoder>
         <rollingPolicy
