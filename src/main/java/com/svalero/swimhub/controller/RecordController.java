@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/records")
 @RequiredArgsConstructor
@@ -21,9 +22,13 @@ public class RecordController {
     private final Logger logger = LoggerFactory.getLogger(RecordController.class);
 
     @GetMapping
-    public ResponseEntity<List<Record>> findAll() {
+    public ResponseEntity<List<Record>> findAll(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long federationId,
+            @RequestParam(required = false) Long raceId) {
         logger.info("BEGIN findAll records");
-        List<Record> records = recordService.findAll();
+        List<Record> records = recordService.findAll(gender, categoryId, federationId, raceId);
         logger.info("END findAll records");
         return ResponseEntity.ok(records);
     }

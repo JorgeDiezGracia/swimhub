@@ -21,9 +21,11 @@ public class EventController {
     private final Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @GetMapping
-    public ResponseEntity<List<Event>> findAll() {
+    public ResponseEntity<List<Event>> findAll(
+            @RequestParam(required = false) Long federationId,
+            @RequestParam(required = false) String poolType) {
         logger.info("BEGIN findAll events");
-        List<Event> events = eventService.findAll();
+        List<Event> events = eventService.findAll(federationId, poolType);
         logger.info("END findAll events");
         return ResponseEntity.ok(events);
     }
