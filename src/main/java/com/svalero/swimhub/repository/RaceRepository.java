@@ -1,6 +1,6 @@
 package com.svalero.swimhub.repository;
 
-import com.svalero.swimhub.entity.Race;
+import com.svalero.swimhub.domain.Race;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

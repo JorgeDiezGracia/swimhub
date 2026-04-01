@@ -1,6 +1,6 @@
 package com.svalero.swimhub.repository;
 
-import com.svalero.swimhub.entity.League;
+import com.svalero.swimhub.domain.League;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

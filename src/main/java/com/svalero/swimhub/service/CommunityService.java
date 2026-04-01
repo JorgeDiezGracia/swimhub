@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.Community;
+import com.svalero.swimhub.domain.Community;
+import com.svalero.swimhub.exception.CommunityNotFoundException;
 import com.svalero.swimhub.repository.CommunityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class CommunityService {
         return communityRepository.findAll();
     }
 
-    public Community findById(Long id) {
+    public Community findById(Long id) throws CommunityNotFoundException {
         return communityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Community not found with id: " + id));
+                .orElseThrow(() -> new CommunityNotFoundException(
+                        "Community not found with id: " + id));
     }
 }

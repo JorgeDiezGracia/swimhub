@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
-import com.svalero.swimhub.entity.Swimmer;
+import com.svalero.swimhub.domain.Swimmer;
+import com.svalero.swimhub.exception.SwimmerNotFoundException;
 import com.svalero.swimhub.repository.SwimmerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class SwimmerService {
         return swimmerRepository.findAll();
     }
 
-    public Swimmer findById(Long id) {
+    public Swimmer findById(Long id) throws SwimmerNotFoundException {
         return swimmerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Swimmer not found with id: " + id));
+                .orElseThrow(() -> new SwimmerNotFoundException(
+                        "Swimmer not found with id: " + id));
     }
 }
