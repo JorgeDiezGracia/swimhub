@@ -3,6 +3,7 @@ package com.svalero.swimhub.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
@@ -19,6 +20,7 @@ public class Community {
     @Column(length = 2)
     private String code;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "community")
     private List<Federation> federations;
 }

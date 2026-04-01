@@ -3,6 +3,7 @@ package com.svalero.swimhub.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
@@ -26,6 +27,7 @@ public class Club {
     @JoinColumn(name = "league_id", nullable = false)
     private League league;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "club")
     private List<Swimmer> swimmers;
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
@@ -30,6 +31,7 @@ public class Event {
     @JoinColumn(name = "federation_id", nullable = false)
     private Federation federation;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "event")
     private List<TimeRecord> timeRecords;
 }
