@@ -3,6 +3,7 @@ package com.svalero.swimhub.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
@@ -22,9 +23,11 @@ public class Race {
     @Column(name = "pool_type", nullable = false, length = 20)
     private String poolType;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "race")
     private List<TimeRecord> timeRecords;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "race")
     private List<Record> records;
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
@@ -37,6 +38,7 @@ public class Swimmer {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "swimmer")
     private List<TimeRecord> timeRecords;
 }

@@ -3,6 +3,7 @@ package com.svalero.swimhub.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
