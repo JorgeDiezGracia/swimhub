@@ -13,7 +13,16 @@ public class TimeRecordService {
 
     private final TimeRecordRepository timeRecordRepository;
 
-    public List<TimeRecord> findAll() {
+    public List<TimeRecord> findAll(Long swimmerId, Long raceId, Long eventId) {
+        if (swimmerId != null && raceId != null) {
+            return timeRecordRepository.findBySwimmerIdAndRaceId(swimmerId, raceId);
+        } else if (swimmerId != null) {
+            return timeRecordRepository.findBySwimmerId(swimmerId);
+        } else if (raceId != null) {
+            return timeRecordRepository.findByRaceId(raceId);
+        } else if (eventId != null) {
+            return timeRecordRepository.findByEventId(eventId);
+        }
         return timeRecordRepository.findAll();
     }
 

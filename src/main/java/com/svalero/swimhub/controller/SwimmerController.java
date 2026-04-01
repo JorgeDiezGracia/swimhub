@@ -21,9 +21,13 @@ public class SwimmerController {
     private final Logger logger = LoggerFactory.getLogger(SwimmerController.class);
 
     @GetMapping
-    public ResponseEntity<List<Swimmer>> findAll() {
+    public ResponseEntity<List<Swimmer>> findAll(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long clubId,
+            @RequestParam(required = false) Long federationId) {
         logger.info("BEGIN findAll swimmers");
-        List<Swimmer> swimmers = swimmerService.findAll();
+        List<Swimmer> swimmers = swimmerService.findAll(gender, categoryId, clubId, federationId);
         logger.info("END findAll swimmers");
         return ResponseEntity.ok(swimmers);
     }

@@ -13,7 +13,18 @@ public class SwimmerService {
 
     private final SwimmerRepository swimmerRepository;
 
-    public List<Swimmer> findAll() {
+    public List<Swimmer> findAll(String gender, Long categoryId, Long clubId, Long federationId) {
+        if (gender != null && categoryId != null) {
+            return swimmerRepository.findByGenderAndCategoryId(gender, categoryId);
+        } else if (gender != null) {
+            return swimmerRepository.findByGender(gender);
+        } else if (categoryId != null) {
+            return swimmerRepository.findByCategoryId(categoryId);
+        } else if (clubId != null) {
+            return swimmerRepository.findByClubId(clubId);
+        } else if (federationId != null) {
+            return swimmerRepository.findByClubLeagueFederationId(federationId);
+        }
         return swimmerRepository.findAll();
     }
 

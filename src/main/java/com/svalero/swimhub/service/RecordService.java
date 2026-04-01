@@ -13,7 +13,18 @@ public class RecordService {
 
     private final RecordRepository recordRepository;
 
-    public List<Record> findAll() {
+    public List<Record> findAll(String gender, Long categoryId, Long federationId, Long raceId) {
+        if (gender != null && categoryId != null) {
+            return recordRepository.findByGenderAndCategoryId(gender, categoryId);
+        } else if (gender != null) {
+            return recordRepository.findByGender(gender);
+        } else if (categoryId != null) {
+            return recordRepository.findByCategoryId(categoryId);
+        } else if (federationId != null) {
+            return recordRepository.findByFederationId(federationId);
+        } else if (raceId != null) {
+            return recordRepository.findByRaceId(raceId);
+        }
         return recordRepository.findAll();
     }
 

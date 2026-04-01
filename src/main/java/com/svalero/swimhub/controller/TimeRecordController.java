@@ -21,9 +21,12 @@ public class TimeRecordController {
     private final Logger logger = LoggerFactory.getLogger(TimeRecordController.class);
 
     @GetMapping
-    public ResponseEntity<List<TimeRecord>> findAll() {
+    public ResponseEntity<List<TimeRecord>> findAll(
+            @RequestParam(required = false) Long swimmerId,
+            @RequestParam(required = false) Long raceId,
+            @RequestParam(required = false) Long eventId) {
         logger.info("BEGIN findAll timeRecords");
-        List<TimeRecord> timeRecords = timeRecordService.findAll();
+        List<TimeRecord> timeRecords = timeRecordService.findAll(swimmerId, raceId, eventId);
         logger.info("END findAll timeRecords");
         return ResponseEntity.ok(timeRecords);
     }

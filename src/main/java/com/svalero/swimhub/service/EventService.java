@@ -13,7 +13,12 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
-    public List<Event> findAll() {
+    public List<Event> findAll(Long federationId, String poolType) {
+        if (federationId != null) {
+            return eventRepository.findByFederationId(federationId);
+        } else if (poolType != null) {
+            return eventRepository.findByPoolType(poolType);
+        }
         return eventRepository.findAll();
     }
 
