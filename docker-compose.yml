@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mariadb:
     image: mariadb:11
@@ -13,6 +11,26 @@ services:
       - "3306:3306"
     volumes:
       - swimhub_data:/var/lib/mysql
+    networks:
+      - swimhub-net
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: swimhub-app
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/swimhub
+      SPRING_DATASOURCE_USERNAME: swimhub
+      SPRING_DATASOURCE_PASSWORD: swimhub123
+    ports:
+      - "8080:8080"
     networks:
       - swimhub-net
 
