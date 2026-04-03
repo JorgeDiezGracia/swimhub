@@ -13,4 +13,5 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> findByFederationId(Long federationId);
     List<Record> findByRaceId(Long raceId);
     List<Record> findByGenderAndCategoryId(String gender, Long categoryId);
+    List<Record> findBySwimmerId(Long swimmerId);
 }

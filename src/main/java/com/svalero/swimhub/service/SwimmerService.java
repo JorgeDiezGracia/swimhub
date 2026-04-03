@@ -1,6 +1,7 @@
 package com.svalero.swimhub.service;
 
 import com.svalero.swimhub.domain.Swimmer;
+import com.svalero.swimhub.exception.ClubNotFoundException;
 import com.svalero.swimhub.exception.SwimmerNotFoundException;
 import com.svalero.swimhub.repository.SwimmerRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,9 @@ public class SwimmerService {
         return swimmerRepository.findById(id)
                 .orElseThrow(() -> new SwimmerNotFoundException(
                         "Swimmer not found with id: " + id));
+    }
+
+    public List<Swimmer> findByClubId(Long clubId) throws ClubNotFoundException {
+        return swimmerRepository.findByClubId(clubId);
     }
 }

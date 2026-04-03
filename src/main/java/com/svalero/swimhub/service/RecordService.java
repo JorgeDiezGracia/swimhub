@@ -2,6 +2,7 @@ package com.svalero.swimhub.service;
 
 import com.svalero.swimhub.domain.Record;
 import com.svalero.swimhub.exception.RecordNotFoundException;
+import com.svalero.swimhub.exception.SwimmerNotFoundException;
 import com.svalero.swimhub.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,9 @@ public class RecordService {
         return recordRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(
                         "Record not found with id: " + id));
+    }
+
+    public List<Record> findBySwimmerId(Long swimmerId) throws SwimmerNotFoundException {
+        return recordRepository.findBySwimmerId(swimmerId);
     }
 }

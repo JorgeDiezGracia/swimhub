@@ -27,4 +27,8 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException(
                         "Event not found with id: " + id));
     }
+
+    public List<Event> findByFederationId(Long federationId) {
+        return eventRepository.findByFederationId(federationId);
+    }
 }

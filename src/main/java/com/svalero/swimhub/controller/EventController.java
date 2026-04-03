@@ -1,9 +1,11 @@
 package com.svalero.swimhub.controller;
 
 import com.svalero.swimhub.domain.Event;
+import com.svalero.swimhub.domain.TimeRecord;
 import com.svalero.swimhub.exception.EventNotFoundException;
 import com.svalero.swimhub.exception.ErrorResponse;
 import com.svalero.swimhub.service.EventService;
+import com.svalero.swimhub.service.TimeRecordService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final TimeRecordService timeRecordService;
     private final Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @GetMapping
@@ -37,6 +40,15 @@ public class EventController {
         Event event = eventService.findById(id);
         logger.info("END findById event {}", id);
         return ResponseEntity.ok(event);
+    }
+
+    @GetMapping("/{id}/time-records")
+    public ResponseEntity<List<TimeRecord>> findTimeRecords(@PathVariable Long id)
+            throws EventNotFoundException {
+        logger.info("BEGIN findTimeRecords by event {}", id);
+        List<TimeRecord> timeRecords = timeRecordService.findByEventId(id);
+        logger.info("END findTimeRecords by event {}", id);
+        return ResponseEntity.ok(timeRecords);
     }
 
     @ExceptionHandler(EventNotFoundException.class)
