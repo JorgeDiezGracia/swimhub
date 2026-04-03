@@ -1,9 +1,11 @@
 package com.svalero.swimhub.controller;
 
 import com.svalero.swimhub.domain.Club;
+import com.svalero.swimhub.domain.Swimmer;
 import com.svalero.swimhub.exception.ClubNotFoundException;
 import com.svalero.swimhub.exception.ErrorResponse;
 import com.svalero.swimhub.service.ClubService;
+import com.svalero.swimhub.service.SwimmerService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import java.util.List;
 public class ClubController {
 
     private final ClubService clubService;
+    private final SwimmerService swimmerService;
     private final Logger logger = LoggerFactory.getLogger(ClubController.class);
 
     @GetMapping
@@ -35,6 +38,15 @@ public class ClubController {
         Club club = clubService.findById(id);
         logger.info("END findById club {}", id);
         return ResponseEntity.ok(club);
+    }
+
+    @GetMapping("/{id}/swimmers")
+    public ResponseEntity<List<Swimmer>> findSwimmers(@PathVariable Long id)
+            throws ClubNotFoundException {
+        logger.info("BEGIN findSwimmers by club {}", id);
+        List<Swimmer> swimmers = swimmerService.findByClubId(id);
+        logger.info("END findSwimmers by club {}", id);
+        return ResponseEntity.ok(swimmers);
     }
 
     @ExceptionHandler(ClubNotFoundException.class)

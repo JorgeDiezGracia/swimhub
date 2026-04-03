@@ -1,9 +1,13 @@
 package com.svalero.swimhub.controller;
 
 import com.svalero.swimhub.domain.Swimmer;
+import com.svalero.swimhub.domain.TimeRecord;
 import com.svalero.swimhub.exception.SwimmerNotFoundException;
 import com.svalero.swimhub.exception.ErrorResponse;
+import com.svalero.swimhub.service.RecordService;
 import com.svalero.swimhub.service.SwimmerService;
+import com.svalero.swimhub.service.TimeRecordService;
+import com.svalero.swimhub.domain.Record;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +22,8 @@ import java.util.List;
 public class SwimmerController {
 
     private final SwimmerService swimmerService;
+    private final TimeRecordService timeRecordService;
+    private final RecordService recordService;
     private final Logger logger = LoggerFactory.getLogger(SwimmerController.class);
 
     @GetMapping
@@ -39,6 +45,24 @@ public class SwimmerController {
         Swimmer swimmer = swimmerService.findById(id);
         logger.info("END findById swimmer {}", id);
         return ResponseEntity.ok(swimmer);
+    }
+
+    @GetMapping("/{id}/time-records")
+    public ResponseEntity<List<TimeRecord>> findTimeRecords(@PathVariable Long id)
+            throws SwimmerNotFoundException {
+        logger.info("BEGIN findTimeRecords by swimmer {}", id);
+        List<TimeRecord> timeRecords = timeRecordService.findBySwimmerId(id);
+        logger.info("END findTimeRecords by swimmer {}", id);
+        return ResponseEntity.ok(timeRecords);
+    }
+
+    @GetMapping("/{id}/records")
+    public ResponseEntity<List<Record>> findRecords(@PathVariable Long id)
+            throws SwimmerNotFoundException {
+        logger.info("BEGIN findRecords by swimmer {}", id);
+        List<Record> records = recordService.findBySwimmerId(id);
+        logger.info("END findRecords by swimmer {}", id);
+        return ResponseEntity.ok(records);
     }
 
     @ExceptionHandler(SwimmerNotFoundException.class)

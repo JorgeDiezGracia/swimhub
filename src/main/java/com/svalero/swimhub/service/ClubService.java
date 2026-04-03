@@ -2,6 +2,7 @@ package com.svalero.swimhub.service;
 
 import com.svalero.swimhub.domain.Club;
 import com.svalero.swimhub.exception.ClubNotFoundException;
+import com.svalero.swimhub.exception.FederationNotFoundException;
 import com.svalero.swimhub.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,4 +23,10 @@ public class ClubService {
                 .orElseThrow(() -> new ClubNotFoundException(
                         "Club not found with id: " + id));
     }
+
+    public List<Club> findByFederationId(Long federationId) throws FederationNotFoundException {
+        return clubRepository.findByLeagueFederationId(federationId);
+    }
+
+
 }
