@@ -10,6 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -34,11 +37,12 @@ public class TimeRecordControllerTest {
         tr1.setId(1L);
         tr1.setTime(28.45);
 
-        when(timeRecordService.findAll(null, null, null)).thenReturn(List.of(tr1));
+        when(timeRecordService.findAll(null, null, null, PageRequest.of(0, 10, Sort.by("id"))))
+                .thenReturn(new PageImpl<>(List.of(tr1)));
 
         mockMvc.perform(get("/api/time-records"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].time").value(28.45));
+                .andExpect(jsonPath("$.content[0].time").value(28.45));
     }
 
     @Test

@@ -5,6 +5,8 @@ import com.svalero.swimhub.exception.ClubNotFoundException;
 import com.svalero.swimhub.exception.SwimmerNotFoundException;
 import com.svalero.swimhub.repository.SwimmerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,19 +16,19 @@ public class SwimmerService {
 
     private final SwimmerRepository swimmerRepository;
 
-    public List<Swimmer> findAll(String gender, Long categoryId, Long clubId, Long federationId) {
+    public Page<Swimmer> findAll(String gender, Long categoryId, Long clubId, Long federationId, Pageable pageable) {
         if (gender != null && categoryId != null) {
-            return swimmerRepository.findByGenderAndCategoryId(gender, categoryId);
+            return swimmerRepository.findByGenderAndCategoryId(gender, categoryId, pageable);
         } else if (gender != null) {
-            return swimmerRepository.findByGender(gender);
+            return swimmerRepository.findByGender(gender, pageable);
         } else if (categoryId != null) {
-            return swimmerRepository.findByCategoryId(categoryId);
+            return swimmerRepository.findByCategoryId(categoryId, pageable);
         } else if (clubId != null) {
-            return swimmerRepository.findByClubId(clubId);
+            return swimmerRepository.findByClubId(clubId, pageable);
         } else if (federationId != null) {
-            return swimmerRepository.findByClubLeagueFederationId(federationId);
+            return swimmerRepository.findByClubLeagueFederationId(federationId, pageable);
         }
-        return swimmerRepository.findAll();
+        return swimmerRepository.findAll(pageable);
     }
 
     public Swimmer findById(Long id) throws SwimmerNotFoundException {
@@ -36,6 +38,6 @@ public class SwimmerService {
     }
 
     public List<Swimmer> findByClubId(Long clubId) throws ClubNotFoundException {
-        return swimmerRepository.findByClubId(clubId);
+        return swimmerRepository.findByClubId(clubId, Pageable.unpaged()).getContent();
     }
 }

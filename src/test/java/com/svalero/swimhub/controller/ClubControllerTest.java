@@ -17,6 +17,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ClubControllerTest {
@@ -34,11 +39,12 @@ public class ClubControllerTest {
         c1.setId(1L);
         c1.setName("CN Zaragoza");
 
-        when(clubService.findAll()).thenReturn(List.of(c1));
+        when(clubService.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(c1)));
 
         mockMvc.perform(get("/api/clubs"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("CN Zaragoza"));
+                .andExpect(jsonPath("$.content[0].name").value("CN Zaragoza"));
     }
 
     @Test

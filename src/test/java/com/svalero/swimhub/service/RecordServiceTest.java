@@ -8,12 +8,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 public class RecordServiceTest {
@@ -31,12 +40,12 @@ public class RecordServiceTest {
         r1.setTime(27.90);
         r1.setGender("M");
 
-        when(recordRepository.findAll()).thenReturn(List.of(r1));
+        when(recordRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(r1)));
 
-        List<Record> result = recordService.findAll(null, null, null, null);
+        Page<Record> result = recordService.findAll(null, null, null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(recordRepository, times(1)).findAll();
+        assertEquals(1, result.getTotalElements());
+        verify(recordRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -45,12 +54,12 @@ public class RecordServiceTest {
         r1.setId(1L);
         r1.setGender("M");
 
-        when(recordRepository.findByGender("M")).thenReturn(List.of(r1));
+        when(recordRepository.findByGender(eq("M"), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(r1)));
 
-        List<Record> result = recordService.findAll("M", null, null, null);
+        Page<Record> result = recordService.findAll("M", null, null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(recordRepository, times(1)).findByGender("M");
+        assertEquals(1, result.getTotalElements());
+        verify(recordRepository, times(1)).findByGender(eq("M"), any(Pageable.class));
     }
 
     @Test

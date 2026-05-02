@@ -6,6 +6,8 @@ import com.svalero.swimhub.exception.SwimmerNotFoundException;
 import com.svalero.swimhub.exception.TimeRecordNotFoundException;
 import com.svalero.swimhub.repository.TimeRecordRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -15,17 +17,17 @@ public class TimeRecordService {
 
     private final TimeRecordRepository timeRecordRepository;
 
-    public List<TimeRecord> findAll(Long swimmerId, Long raceId, Long eventId) {
+    public Page<TimeRecord> findAll(Long swimmerId, Long raceId, Long eventId, Pageable pageable) {
         if (swimmerId != null && raceId != null) {
-            return timeRecordRepository.findBySwimmerIdAndRaceId(swimmerId, raceId);
+            return timeRecordRepository.findBySwimmerIdAndRaceId(swimmerId, raceId, pageable);
         } else if (swimmerId != null) {
-            return timeRecordRepository.findBySwimmerId(swimmerId);
+            return timeRecordRepository.findBySwimmerId(swimmerId, pageable);
         } else if (raceId != null) {
-            return timeRecordRepository.findByRaceId(raceId);
+            return timeRecordRepository.findByRaceId(raceId, pageable);
         } else if (eventId != null) {
-            return timeRecordRepository.findByEventId(eventId);
+            return timeRecordRepository.findByEventId(eventId, pageable);
         }
-        return timeRecordRepository.findAll();
+        return timeRecordRepository.findAll(pageable);
     }
 
     public TimeRecord findById(Long id) throws TimeRecordNotFoundException {
@@ -35,10 +37,10 @@ public class TimeRecordService {
     }
 
     public List<TimeRecord> findBySwimmerId(Long swimmerId) throws SwimmerNotFoundException {
-        return timeRecordRepository.findBySwimmerId(swimmerId);
+        return timeRecordRepository.findBySwimmerId(swimmerId, Pageable.unpaged()).getContent();
     }
 
     public List<TimeRecord> findByEventId(Long eventId) throws EventNotFoundException {
-        return timeRecordRepository.findByEventId(eventId);
+        return timeRecordRepository.findByEventId(eventId, Pageable.unpaged()).getContent();
     }
 }

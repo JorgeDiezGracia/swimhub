@@ -10,6 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -35,11 +38,12 @@ public class RecordControllerTest {
         r1.setTime(27.90);
         r1.setGender("M");
 
-        when(recordService.findAll(null, null, null, null)).thenReturn(List.of(r1));
+        when(recordService.findAll(null, null, null, null, PageRequest.of(0, 10, Sort.by("id"))))
+                .thenReturn(new PageImpl<>(List.of(r1)));
 
         mockMvc.perform(get("/api/records"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].time").value(27.90));
+                .andExpect(jsonPath("$.content[0].time").value(27.90));
     }
 
     @Test

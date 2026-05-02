@@ -15,6 +15,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import org.springframework.data.domain.Page;
+
 @ExtendWith(MockitoExtension.class)
 public class ClubServiceTest {
 
@@ -30,13 +36,13 @@ public class ClubServiceTest {
         c1.setId(1L);
         c1.setName("CN Zaragoza");
 
-        when(clubRepository.findAll()).thenReturn(List.of(c1));
+        when(clubRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(c1)));
 
-        List<Club> result = clubService.findAll();
+        Page<Club> result = clubService.findAll(PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        assertEquals("CN Zaragoza", result.get(0).getName());
-        verify(clubRepository, times(1)).findAll();
+        assertEquals(1, result.getTotalElements());
+        assertEquals("CN Zaragoza", result.getContent().get(0).getName());
+        verify(clubRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test

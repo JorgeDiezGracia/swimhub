@@ -10,6 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -35,11 +42,11 @@ public class SwimmerControllerTest {
         s1.setName("Carlos");
         s1.setSurname("García");
 
-        when(swimmerService.findAll(null, null, null, null)).thenReturn(List.of(s1));
-
+        when(swimmerService.findAll(null, null, null, null, PageRequest.of(0, 10, Sort.by("id"))))
+                .thenReturn(new PageImpl<>(List.of(s1)));
         mockMvc.perform(get("/api/swimmers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Carlos"));
+                .andExpect(jsonPath("$.content[0].name").value("Carlos"));
     }
 
     @Test
@@ -50,11 +57,12 @@ public class SwimmerControllerTest {
         s1.setName("Carlos");
         s1.setGender("M");
 
-        when(swimmerService.findAll("M", null, null, null)).thenReturn(List.of(s1));
+        when(swimmerService.findAll(eq("M"), isNull(), isNull(), isNull(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(s1)));
 
         mockMvc.perform(get("/api/swimmers?gender=M"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].gender").value("M"));
+                .andExpect(jsonPath("$.content[0].gender").value("M"));
     }
 
     @Test
