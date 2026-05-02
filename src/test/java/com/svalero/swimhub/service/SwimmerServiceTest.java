@@ -15,6 +15,18 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
 @ExtendWith(MockitoExtension.class)
 public class SwimmerServiceTest {
 
@@ -31,12 +43,12 @@ public class SwimmerServiceTest {
         s1.setName("Carlos");
         s1.setGender("M");
 
-        when(swimmerRepository.findAll()).thenReturn(List.of(s1));
+        when(swimmerRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(s1)));
 
-        List<Swimmer> result = swimmerService.findAll(null, null, null, null);
+        Page<Swimmer> result = swimmerService.findAll(null, null, null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(swimmerRepository, times(1)).findAll();
+        assertEquals(1, result.getTotalElements());
+        verify(swimmerRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -46,13 +58,12 @@ public class SwimmerServiceTest {
         s1.setName("Carlos");
         s1.setGender("M");
 
-        when(swimmerRepository.findByGender("M")).thenReturn(List.of(s1));
+        when(swimmerRepository.findByGender(eq("M"), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(s1)));
 
-        List<Swimmer> result = swimmerService.findAll("M", null, null, null);
+        Page<Swimmer> result = swimmerService.findAll("M", null, null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        assertEquals("M", result.get(0).getGender());
-        verify(swimmerRepository, times(1)).findByGender("M");
+        assertEquals(1, result.getTotalElements());
+        verify(swimmerRepository, times(1)).findByGender(eq("M"), any(Pageable.class));
     }
 
     @Test
@@ -62,12 +73,12 @@ public class SwimmerServiceTest {
         s1.setName("Carlos");
         s1.setGender("M");
 
-        when(swimmerRepository.findByGenderAndCategoryId("M", 4L)).thenReturn(List.of(s1));
+        when(swimmerRepository.findByGenderAndCategoryId(eq("M"), eq(4L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(s1)));
 
-        List<Swimmer> result = swimmerService.findAll("M", 4L, null, null);
+        Page<Swimmer> result = swimmerService.findAll("M", 4L, null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(swimmerRepository, times(1)).findByGenderAndCategoryId("M", 4L);
+        assertEquals(1, result.getTotalElements());
+        verify(swimmerRepository, times(1)).findByGenderAndCategoryId(eq("M"), eq(4L), any(Pageable.class));
     }
 
     @Test

@@ -17,6 +17,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EventControllerTest {
@@ -34,11 +39,12 @@ public class EventControllerTest {
         e1.setId(1L);
         e1.setName("Campeonato Aragonés 2025");
 
-        when(eventService.findAll(null, null)).thenReturn(List.of(e1));
+        when(eventService.findAll(isNull(), isNull(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(e1)));
 
         mockMvc.perform(get("/api/events"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Campeonato Aragonés 2025"));
+                .andExpect(jsonPath("$.content[0].name").value("Campeonato Aragonés 2025"));
     }
 
     @Test

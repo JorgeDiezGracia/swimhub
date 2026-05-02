@@ -15,6 +15,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
 @ExtendWith(MockitoExtension.class)
 public class EventServiceTest {
 
@@ -30,12 +37,12 @@ public class EventServiceTest {
         e1.setId(1L);
         e1.setName("Campeonato Aragonés 2025");
 
-        when(eventRepository.findAll()).thenReturn(List.of(e1));
+        when(eventRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(e1)));
 
-        List<Event> result = eventService.findAll(null, null);
+        Page<Event> result = eventService.findAll(null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(eventRepository, times(1)).findAll();
+        assertEquals(1, result.getTotalElements());
+        verify(eventRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -44,12 +51,12 @@ public class EventServiceTest {
         e1.setId(1L);
         e1.setName("Campeonato Aragonés 2025");
 
-        when(eventRepository.findByFederationId(1L)).thenReturn(List.of(e1));
+        when(eventRepository.findByFederationId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(e1)));
 
-        List<Event> result = eventService.findAll(1L, null);
+        Page<Event> result = eventService.findAll(1L, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(eventRepository, times(1)).findByFederationId(1L);
+        assertEquals(1, result.getTotalElements());
+        verify(eventRepository, times(1)).findByFederationId(eq(1L), any(Pageable.class));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.svalero.swimhub.controller;
 
+import com.svalero.swimhub.domain.Record;
 import com.svalero.swimhub.domain.Swimmer;
 import com.svalero.swimhub.domain.TimeRecord;
 import com.svalero.swimhub.exception.SwimmerNotFoundException;
@@ -7,10 +8,13 @@ import com.svalero.swimhub.exception.ErrorResponse;
 import com.svalero.swimhub.service.RecordService;
 import com.svalero.swimhub.service.SwimmerService;
 import com.svalero.swimhub.service.TimeRecordService;
-import com.svalero.swimhub.domain.Record;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +31,17 @@ public class SwimmerController {
     private final Logger logger = LoggerFactory.getLogger(SwimmerController.class);
 
     @GetMapping
-    public ResponseEntity<List<Swimmer>> findAll(
+    public ResponseEntity<Page<Swimmer>> findAll(
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Long clubId,
-            @RequestParam(required = false) Long federationId) {
+            @RequestParam(required = false) Long federationId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort) {
         logger.info("BEGIN findAll swimmers");
-        List<Swimmer> swimmers = swimmerService.findAll(gender, categoryId, clubId, federationId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        Page<Swimmer> swimmers = swimmerService.findAll(gender, categoryId, clubId, federationId, pageable);
         logger.info("END findAll swimmers");
         return ResponseEntity.ok(swimmers);
     }
@@ -57,10 +65,10 @@ public class SwimmerController {
     }
 
     @GetMapping("/{id}/records")
-    public ResponseEntity<List<Record>> findRecords(@PathVariable Long id)
+    public ResponseEntity<List<com.svalero.swimhub.domain.Record>> findRecords(@PathVariable Long id)
             throws SwimmerNotFoundException {
         logger.info("BEGIN findRecords by swimmer {}", id);
-        List<Record> records = recordService.findBySwimmerId(id);
+        List<com.svalero.swimhub.domain.Record> records = recordService.findBySwimmerId(id);
         logger.info("END findRecords by swimmer {}", id);
         return ResponseEntity.ok(records);
     }

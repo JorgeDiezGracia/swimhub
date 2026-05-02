@@ -9,6 +9,10 @@ import com.svalero.swimhub.service.TimeRecordService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +28,15 @@ public class EventController {
     private final Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @GetMapping
-    public ResponseEntity<List<Event>> findAll(
+    public ResponseEntity<Page<Event>> findAll(
             @RequestParam(required = false) Long federationId,
-            @RequestParam(required = false) String poolType) {
+            @RequestParam(required = false) String poolType,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort) {
         logger.info("BEGIN findAll events");
-        List<Event> events = eventService.findAll(federationId, poolType);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        Page<Event> events = eventService.findAll(federationId, poolType, pageable);
         logger.info("END findAll events");
         return ResponseEntity.ok(events);
     }

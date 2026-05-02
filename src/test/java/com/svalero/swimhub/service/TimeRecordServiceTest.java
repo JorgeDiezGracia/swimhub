@@ -14,6 +14,12 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 public class TimeRecordServiceTest {
@@ -30,12 +36,12 @@ public class TimeRecordServiceTest {
         tr1.setId(1L);
         tr1.setTime(28.45);
 
-        when(timeRecordRepository.findAll()).thenReturn(List.of(tr1));
+        when(timeRecordRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(tr1)));
 
-        List<TimeRecord> result = timeRecordService.findAll(null, null, null);
+        Page<TimeRecord> result = timeRecordService.findAll(null, null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(timeRecordRepository, times(1)).findAll();
+        assertEquals(1, result.getTotalElements());
+        verify(timeRecordRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -44,12 +50,12 @@ public class TimeRecordServiceTest {
         tr1.setId(1L);
         tr1.setTime(28.45);
 
-        when(timeRecordRepository.findBySwimmerId(1L)).thenReturn(List.of(tr1));
+        when(timeRecordRepository.findBySwimmerId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(tr1)));
 
-        List<TimeRecord> result = timeRecordService.findAll(1L, null, null);
+        Page<TimeRecord> result = timeRecordService.findAll(1L, null, null, PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        verify(timeRecordRepository, times(1)).findBySwimmerId(1L);
+        assertEquals(1, result.getTotalElements());
+        verify(timeRecordRepository, times(1)).findBySwimmerId(eq(1L), any(Pageable.class));
     }
 
     @Test

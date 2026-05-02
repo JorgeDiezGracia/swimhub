@@ -7,10 +7,13 @@ import com.svalero.swimhub.service.TimeRecordService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/time-records")
@@ -21,12 +24,16 @@ public class TimeRecordController {
     private final Logger logger = LoggerFactory.getLogger(TimeRecordController.class);
 
     @GetMapping
-    public ResponseEntity<List<TimeRecord>> findAll(
+    public ResponseEntity<Page<TimeRecord>> findAll(
             @RequestParam(required = false) Long swimmerId,
             @RequestParam(required = false) Long raceId,
-            @RequestParam(required = false) Long eventId) {
+            @RequestParam(required = false) Long eventId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort) {
         logger.info("BEGIN findAll timeRecords");
-        List<TimeRecord> timeRecords = timeRecordService.findAll(swimmerId, raceId, eventId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        Page<TimeRecord> timeRecords = timeRecordService.findAll(swimmerId, raceId, eventId, pageable);
         logger.info("END findAll timeRecords");
         return ResponseEntity.ok(timeRecords);
     }

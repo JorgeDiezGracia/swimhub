@@ -5,6 +5,8 @@ import com.svalero.swimhub.exception.ClubNotFoundException;
 import com.svalero.swimhub.exception.FederationNotFoundException;
 import com.svalero.swimhub.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,8 +16,8 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
 
-    public List<Club> findAll() {
-        return clubRepository.findAll();
+    public Page<Club> findAll(Pageable pageable) {
+        return clubRepository.findAll(pageable);
     }
 
     public Club findById(Long id) throws ClubNotFoundException {
@@ -27,6 +29,4 @@ public class ClubService {
     public List<Club> findByFederationId(Long federationId) throws FederationNotFoundException {
         return clubRepository.findByLeagueFederationId(federationId);
     }
-
-
 }

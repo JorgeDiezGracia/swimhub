@@ -9,6 +9,10 @@ import com.svalero.swimhub.service.SwimmerService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +28,13 @@ public class ClubController {
     private final Logger logger = LoggerFactory.getLogger(ClubController.class);
 
     @GetMapping
-    public ResponseEntity<List<Club>> findAll() {
+    public ResponseEntity<Page<Club>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort) {
         logger.info("BEGIN findAll clubs");
-        List<Club> clubs = clubService.findAll();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        Page<Club> clubs = clubService.findAll(pageable);
         logger.info("END findAll clubs");
         return ResponseEntity.ok(clubs);
     }
