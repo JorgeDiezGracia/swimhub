@@ -19,18 +19,11 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
-    build: .
-    container_name: swimhub-app
-    depends_on:
-      mariadb:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/swimhub
-      SPRING_DATASOURCE_USERNAME: swimhub
-      SPRING_DATASOURCE_PASSWORD: swimhub123
+  apiman:
+    image: apiman/vertx-standalone
+    container_name: swimhub-apiman
     ports:
-      - "8080:8080"
+      - "8090:8080"
     networks:
       - swimhub-net
 
