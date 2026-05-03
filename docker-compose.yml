@@ -1,0 +1,34 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: swimhub-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: swimhub
+      MYSQL_USER: swimhub
+      MYSQL_PASSWORD: swimhub123
+    ports:
+      - "3306:3306"
+    volumes:
+      - swimhub_data:/var/lib/mysql
+    networks:
+      - swimhub-net
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  apiman:
+    image: apiman/vertx-standalone
+    container_name: swimhub-apiman
+    ports:
+      - "8090:8080"
+    networks:
+      - swimhub-net
+
+volumes:
+  swimhub_data:
+
+networks:
+  swimhub-net:

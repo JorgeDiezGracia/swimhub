@@ -1,0 +1,714 @@
+openapi: 3.0.1
+info:
+  title: SwimHub API
+  description: |
+    API de solo lectura para la gestión de la natación federada en España.
+    Permite consultar información sobre nadadores, clubes, federaciones, 
+    ligas, pruebas, eventos, registros de tiempo y récords oficiales.
+  version: 1.0.0
+  contact:
+    name: Jorge Diez Gracia
+
+tags:
+  - name: communities
+    description: Operaciones con comunidades autónomas
+  - name: federations
+    description: Operaciones con federaciones autonómicas
+  - name: leagues
+    description: Operaciones con ligas provinciales
+  - name: clubs
+    description: Operaciones con clubes
+  - name: categories
+    description: Operaciones con categorías de edad
+  - name: swimmers
+    description: Operaciones con nadadores
+  - name: races
+    description: Operaciones con pruebas
+  - name: events
+    description: Operaciones con eventos y competiciones
+  - name: time-records
+    description: Operaciones con registros de tiempo
+  - name: records
+    description: Operaciones con récords oficiales
+  - name: auth
+    description: Autenticación y generación de tokens JWT
+
+servers:
+  - url: 'http://localhost:8080'
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - auth
+      summary: Obtener token JWT
+      description: Devuelve un token JWT para autenticarse en la API
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Token generado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/communities:
+    get:
+      tags:
+        - communities
+      summary: Devuelve todas las comunidades autónomas
+      description: Devuelve un listado completo de las comunidades autónomas registradas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Community'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/communities/{id}:
+    get:
+      tags:
+        - communities
+      summary: Devuelve una comunidad autónoma
+      description: Devuelve la comunidad autónoma con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Community'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/federations:
+    get:
+      tags:
+        - federations
+      summary: Devuelve todas las federaciones
+      description: Devuelve un listado completo de las federaciones autonómicas registradas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Federation'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/federations/{id}:
+    get:
+      tags:
+        - federations
+      summary: Devuelve una federación
+      description: Devuelve la federación con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Federation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/leagues:
+    get:
+      tags:
+        - leagues
+      summary: Devuelve todas las ligas
+      description: Devuelve un listado completo de las ligas provinciales registradas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/League'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/leagues/{id}:
+    get:
+      tags:
+        - leagues
+      summary: Devuelve una liga
+      description: Devuelve la liga con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/League'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/clubs:
+    get:
+      tags:
+        - clubs
+      summary: Devuelve todos los clubes
+      description: Devuelve un listado completo de los clubes registrados
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Club'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/clubs/{id}:
+    get:
+      tags:
+        - clubs
+      summary: Devuelve un club
+      description: Devuelve el club con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Club'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/categories:
+    get:
+      tags:
+        - categories
+      summary: Devuelve todas las categorías
+      description: Devuelve un listado completo de las categorías de edad registradas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/categories/{id}:
+    get:
+      tags:
+        - categories
+      summary: Devuelve una categoría
+      description: Devuelve la categoría con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/swimmers:
+    get:
+      tags:
+        - swimmers
+      summary: Devuelve todos los nadadores
+      description: |
+        Devuelve un listado completo de los nadadores federados registrados
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Swimmer'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/swimmers/{id}:
+    get:
+      tags:
+        - swimmers
+      summary: Devuelve un nadador
+      description: Devuelve el nadador con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Swimmer'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/races:
+    get:
+      tags:
+        - races
+      summary: Devuelve todas las pruebas
+      description: Devuelve un listado completo de las pruebas oficiales registradas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Race'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/races/{id}:
+    get:
+      tags:
+        - races
+      summary: Devuelve una prueba
+      description: Devuelve la prueba con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Race'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/events:
+    get:
+      tags:
+        - events
+      summary: Devuelve todos los eventos
+      description: Devuelve un listado completo de los eventos y competiciones registrados
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/events/{id}:
+    get:
+      tags:
+        - events
+      summary: Devuelve un evento
+      description: Devuelve el evento con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/time-records:
+    get:
+      tags:
+        - time-records
+      summary: Devuelve todos los registros de tiempo
+      description: Devuelve un listado completo de los registros de tiempo oficiales
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeRecord'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/time-records/{id}:
+    get:
+      tags:
+        - time-records
+      summary: Devuelve un registro de tiempo
+      description: Devuelve el registro de tiempo con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeRecord'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/records:
+    get:
+      tags:
+        - records
+      summary: Devuelve todos los récords oficiales
+      description: Devuelve un listado completo de los récords oficiales registrados
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Record'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/records/{id}:
+    get:
+      tags:
+        - records
+      summary: Devuelve un récord oficial
+      description: Devuelve el récord oficial con el identificador indicado
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      description: Identificador del recurso
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: admin
+        password:
+          type: string
+          example: admin123
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzM4NCJ9...
+
+    Community:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Aragón
+        code:
+          type: string
+          example: AR
+
+    Federation:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Federación Aragonesa de Natación
+        website:
+          type: string
+          example: www.fanatacion.es
+        community:
+          $ref: '#/components/schemas/Community'
+
+    League:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Liga Zaragoza
+        province:
+          type: string
+          example: Zaragoza
+        federation:
+          $ref: '#/components/schemas/Federation'
+
+    Club:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: CN Zaragoza
+        city:
+          type: string
+          example: Zaragoza
+        email:
+          type: string
+          example: cnzaragoza@email.com
+        league:
+          $ref: '#/components/schemas/League'
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Benjamín
+        minAge:
+          type: integer
+          example: 6
+        maxAge:
+          type: integer
+          example: 8
+
+    Swimmer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Carlos
+        surname:
+          type: string
+          example: García
+        birthDate:
+          type: string
+          format: date
+          example: 2005-03-15
+        gender:
+          type: string
+          example: M
+        licenseNumber:
+          type: string
+          example: AR-001
+        club:
+          $ref: '#/components/schemas/Club'
+        category:
+          $ref: '#/components/schemas/Category'
+
+    Race:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        style:
+          type: string
+          example: Libre
+        distance:
+          type: integer
+          example: 50
+        poolType:
+          type: string
+          example: Corta
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Campeonato Aragonés Infantil 2025
+        date:
+          type: string
+          format: date
+          example: 2025-11-15
+        location:
+          type: string
+          example: Zaragoza
+        poolType:
+          type: string
+          example: Corta
+        federation:
+          $ref: '#/components/schemas/Federation'
+
+    TimeRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        time:
+          type: number
+          format: double
+          example: 28.45
+        date:
+          type: string
+          format: date
+          example: 2025-11-15
+        status:
+          type: string
+          example: oficial
+        swimmer:
+          $ref: '#/components/schemas/Swimmer'
+        race:
+          $ref: '#/components/schemas/Race'
+        event:
+          $ref: '#/components/schemas/Event'
+
+    Record:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        time:
+          type: number
+          format: double
+          example: 27.90
+        date:
+          type: string
+          format: date
+          example: 2024-03-10
+        gender:
+          type: string
+          example: M
+        race:
+          $ref: '#/components/schemas/Race'
+        category:
+          $ref: '#/components/schemas/Category'
+        federation:
+          $ref: '#/components/schemas/Federation'
+        swimmer:
+          $ref: '#/components/schemas/Swimmer'
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "Community not found with id: 99"
+
+  responses:
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: No autorizado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
