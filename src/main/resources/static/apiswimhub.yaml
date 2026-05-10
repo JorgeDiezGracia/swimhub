@@ -34,7 +34,7 @@ tags:
     description: Autenticación y generación de tokens JWT
 
 servers:
-  - url: 'http://localhost:8080'
+  - url: 'http://localhost:8081'
 
 security:
   - BearerAuth: []
@@ -61,7 +61,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          description: Credenciales incorrectas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 401
+                message: "Credenciales incorrectas"
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -80,6 +87,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Community'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -98,6 +107,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Community'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -108,16 +119,20 @@ paths:
       tags:
         - federations
       summary: Devuelve todas las federaciones
-      description: Devuelve un listado completo de las federaciones autonómicas registradas
+      description: Devuelve un listado paginado de las federaciones autonómicas registradas
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Federation'
+                $ref: '#/components/schemas/PageFederation'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -136,6 +151,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Federation'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/federations/{id}/clubs:
+    get:
+      tags:
+        - federations
+      summary: Devuelve los clubes de una federación
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Club'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/federations/{id}/events:
+    get:
+      tags:
+        - federations
+      summary: Devuelve los eventos de una federación
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -146,16 +209,20 @@ paths:
       tags:
         - leagues
       summary: Devuelve todas las ligas
-      description: Devuelve un listado completo de las ligas provinciales registradas
+      description: Devuelve un listado paginado de las ligas provinciales registradas
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/League'
+                $ref: '#/components/schemas/PageLeague'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -164,7 +231,6 @@ paths:
       tags:
         - leagues
       summary: Devuelve una liga
-      description: Devuelve la liga con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -174,6 +240,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/League'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -184,16 +252,20 @@ paths:
       tags:
         - clubs
       summary: Devuelve todos los clubes
-      description: Devuelve un listado completo de los clubes registrados
+      description: Devuelve un listado paginado de los clubes registrados
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Club'
+                $ref: '#/components/schemas/PageClub'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -202,7 +274,6 @@ paths:
       tags:
         - clubs
       summary: Devuelve un club
-      description: Devuelve el club con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -212,6 +283,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Club'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/clubs/{id}/swimmers:
+    get:
+      tags:
+        - clubs
+      summary: Devuelve los nadadores de un club
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Swimmer'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -222,7 +318,6 @@ paths:
       tags:
         - categories
       summary: Devuelve todas las categorías
-      description: Devuelve un listado completo de las categorías de edad registradas
       responses:
         '200':
           description: OK
@@ -232,6 +327,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Category'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -240,7 +337,6 @@ paths:
       tags:
         - categories
       summary: Devuelve una categoría
-      description: Devuelve la categoría con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -250,6 +346,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Category'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -260,17 +358,44 @@ paths:
       tags:
         - swimmers
       summary: Devuelve todos los nadadores
-      description: |
-        Devuelve un listado completo de los nadadores federados registrados
+      description: Devuelve un listado paginado de nadadores con filtros opcionales
+      parameters:
+        - name: gender
+          in: query
+          required: false
+          schema:
+            type: string
+            example: M
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: clubId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: federationId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Swimmer'
+                $ref: '#/components/schemas/PageSwimmer'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -279,7 +404,6 @@ paths:
       tags:
         - swimmers
       summary: Devuelve un nadador
-      description: Devuelve el nadador con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -289,6 +413,82 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Swimmer'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/swimmers/{id}/time-records:
+    get:
+      tags:
+        - swimmers
+      summary: Devuelve las marcas de un nadador
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeRecord'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/swimmers/{id}/records:
+    get:
+      tags:
+        - swimmers
+      summary: Devuelve los récords de un nadador
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Record'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/swimmers/{id}/performance:
+    get:
+      tags:
+        - swimmers
+      summary: Análisis de tendencias de rendimiento
+      description: Devuelve el análisis estadístico de rendimiento de un nadador en una prueba
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - name: raceId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceTrend'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -299,7 +499,6 @@ paths:
       tags:
         - races
       summary: Devuelve todas las pruebas
-      description: Devuelve un listado completo de las pruebas oficiales registradas
       responses:
         '200':
           description: OK
@@ -309,6 +508,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Race'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -317,7 +518,6 @@ paths:
       tags:
         - races
       summary: Devuelve una prueba
-      description: Devuelve la prueba con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -327,6 +527,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Race'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -337,16 +539,32 @@ paths:
       tags:
         - events
       summary: Devuelve todos los eventos
-      description: Devuelve un listado completo de los eventos y competiciones registrados
+      description: Devuelve un listado paginado de eventos con filtros opcionales
+      parameters:
+        - name: federationId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: poolType
+          in: query
+          required: false
+          schema:
+            type: string
+            example: Corta
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Event'
+                $ref: '#/components/schemas/PageEvent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -355,7 +573,6 @@ paths:
       tags:
         - events
       summary: Devuelve un evento
-      description: Devuelve el evento con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -365,6 +582,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Event'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/events/{id}/time-records:
+    get:
+      tags:
+        - events
+      summary: Devuelve las marcas de un evento
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeRecord'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -375,16 +617,38 @@ paths:
       tags:
         - time-records
       summary: Devuelve todos los registros de tiempo
-      description: Devuelve un listado completo de los registros de tiempo oficiales
+      description: Devuelve un listado paginado de registros con filtros opcionales
+      parameters:
+        - name: swimmerId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: raceId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: eventId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TimeRecord'
+                $ref: '#/components/schemas/PageTimeRecord'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -393,7 +657,6 @@ paths:
       tags:
         - time-records
       summary: Devuelve un registro de tiempo
-      description: Devuelve el registro de tiempo con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -403,6 +666,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimeRecord'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -413,16 +678,44 @@ paths:
       tags:
         - records
       summary: Devuelve todos los récords oficiales
-      description: Devuelve un listado completo de los récords oficiales registrados
+      description: Devuelve un listado paginado de récords con filtros opcionales
+      parameters:
+        - name: gender
+          in: query
+          required: false
+          schema:
+            type: string
+            example: M
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: federationId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: raceId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Record'
+                $ref: '#/components/schemas/PageRecord'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -431,7 +724,6 @@ paths:
       tags:
         - records
       summary: Devuelve un récord oficial
-      description: Devuelve el récord oficial con el identificador indicado
       parameters:
         - $ref: '#/components/parameters/Id'
       responses:
@@ -441,6 +733,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Record'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -462,6 +756,30 @@ components:
       schema:
         type: integer
         format: int64
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+      description: Número de página (empieza en 0)
+    Size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+      description: Tamaño de página
+    Sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        default: id
+      description: Campo de ordenación
 
   schemas:
     LoginRequest:
@@ -480,6 +798,16 @@ components:
         token:
           type: string
           example: eyJhbGciOiJIUzM4NCJ9...
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "Resource not found with id: 99"
 
     Community:
       type: object
@@ -683,15 +1011,197 @@ components:
         swimmer:
           $ref: '#/components/schemas/Swimmer'
 
-    ErrorResponse:
+    PerformanceTrend:
       type: object
       properties:
-        code:
+        swimmerId:
           type: integer
-          example: 404
-        message:
+          format: int64
+          example: 1
+        swimmerName:
           type: string
-          example: "Community not found with id: 99"
+          example: Carlos
+        swimmerSurname:
+          type: string
+          example: García
+        raceId:
+          type: integer
+          format: int64
+          example: 1
+        raceDescription:
+          type: string
+          example: "Libre 50m Corta"
+        bestTime:
+          type: number
+          format: double
+          example: 28.45
+        worstTime:
+          type: number
+          format: double
+          example: 29.10
+        averageTime:
+          type: number
+          format: double
+          example: 28.77
+        firstTime:
+          type: number
+          format: double
+          example: 29.10
+        lastTime:
+          type: number
+          format: double
+          example: 28.45
+        improvementPercentage:
+          type: number
+          format: double
+          example: 2.23
+        trend:
+          type: string
+          enum: [MEJORANDO, EMPEORANDO, ESTABLE, SIN DATOS]
+          example: MEJORANDO
+        totalRecords:
+          type: integer
+          example: 3
+
+    PageSwimmer:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Swimmer'
+        totalElements:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+
+    PageFederation:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Federation'
+        totalElements:
+          type: integer
+          example: 5
+        totalPages:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+
+    PageLeague:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/League'
+        totalElements:
+          type: integer
+          example: 3
+        totalPages:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+
+    PageClub:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Club'
+        totalElements:
+          type: integer
+          example: 8
+        totalPages:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+
+    PageEvent:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        totalElements:
+          type: integer
+          example: 4
+        totalPages:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+
+    PageTimeRecord:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeRecord'
+        totalElements:
+          type: integer
+          example: 3
+        totalPages:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+
+    PageRecord:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Record'
+        totalElements:
+          type: integer
+          example: 3
+        totalPages:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
 
   responses:
     NotFound:
@@ -700,15 +1210,24 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: No autorizado
+          example:
+            code: 404
+            message: "Resource not found with id: 99"
+    Forbidden:
+      description: Acceso denegado — token JWT ausente o inválido
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 403
+            message: "Access denied"
     InternalServerError:
       description: Error interno del servidor
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 500
+            message: "Internal server error"
