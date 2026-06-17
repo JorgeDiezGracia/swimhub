@@ -147,23 +147,26 @@ develop     ← integración continua
 feature/*   ← desarrollo de funcionalidades
 
 
-📁 Estructura del proyecto
+## 📁 Estructura del proyecto
 
-swimhub/
-├── src/main/java/com/svalero/swimhub/
-│   ├── config/          # Configuración Spring Security, Swagger
-│   ├── controller/      # Controladores REST
-│   ├── domain/          # Entidades JPA
-│   ├── dto/             # Data Transfer Objects
-│   ├── exception/       # Manejo de excepciones
-│   ├── repository/      # Repositorios Spring Data
-│   ├── security/        # JWT Filter, UserDetailsService
-│   └── service/         # Lógica de negocio
-├── src/main/resources/
-│   ├── db/migration/    # Scripts Flyway (V1, V2)
-│   └── application.properties
-├── src/test/            # 77 tests automatizados
-└── docker-compose.yml
+```
+src/main/java/com/svalero/swimhub/
+├── config/        # Configuración Spring Security, Swagger
+├── controller/    # Controladores REST
+├── domain/        # Entidades JPA
+├── dto/           # Data Transfer Objects
+├── exception/     # Manejo de excepciones
+├── repository/    # Repositorios Spring Data
+├── security/      # JWT Filter, UserDetailsService
+└── service/       # Lógica de negocio
+
+src/main/resources/
+├── db/migration/  # Scripts Flyway (V1, V2)
+└── application.properties
+
+src/test/          # 77 tests automatizados
+docker-compose.yml
+```
 
 
 👨‍💻 Autor
